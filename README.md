@@ -1,3 +1,5 @@
+Cambiado desarrollo por otra persona
+
 # git
 
 echo "# git" >> README.md
