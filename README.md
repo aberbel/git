@@ -20,3 +20,7 @@ To https://github.com/aberbel/git.git
 
 - [new branch] main -> main
   branch 'main' set up to track 'origin/main'.
+
+git add .
+git commit -m "Modificado fichero readme"
+git push
