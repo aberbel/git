@@ -1,4 +1,4 @@
-# git
+# git pro
 
 echo "# git" >> README.md
 git init
