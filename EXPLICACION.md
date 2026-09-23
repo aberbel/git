@@ -1,5 +1,25 @@
 # Explicacion completa del trabajo realizado
 
+![Estado](https://img.shields.io/badge/estado-completado-brightgreen)
+![Java](https://img.shields.io/badge/java-8-blue)
+![PlantUML](https://img.shields.io/badge/plantuml-SVG-orange)
+
+> [!NOTE]
+> Este documento resume todo el trabajo de integracion de CKEditor, envio por URL y generacion de diagramas en SVG para visualizacion directa en GitHub.
+
+> [!TIP]
+> Para generar SVG en este entorno usa plantuml-jre8.jar. El archivo plantuml.jar se conserva instalado en la raiz, tal como se solicito.
+
+## Resumen rapido
+
+| Elemento                       | Estado |
+| ------------------------------ | ------ |
+| Formulario con CKEditor        | ✅ OK  |
+| Toolbar reducida (Bold/Link)   | ✅ OK  |
+| Zoom visual 125 por ciento     | ✅ OK  |
+| Parametro URL codificado UTF-8 | ✅ OK  |
+| Diagrama SVG generado          | ✅ OK  |
+
 ## Objetivo principal
 
 Se construyo una pagina HTML con Bootstrap 4 y un formulario con CKEditor para escribir contenido enriquecido y enviarlo por URL como parametro.
@@ -138,7 +158,7 @@ Con lo instalado en este proyecto, estos son los comandos recomendados en PowerS
 
 3. Generar SVG de un archivo .puml:
 
-- java -jar .\plantuml-jre8.jar -tsvg .\img\secuencia_ckeditor.puml
+- FUNCIONA OK: **java -jar .\plantuml-jre8.jar -tsvg .\img\secuencia_ckeditor.puml**
 
 4. Generar SVG de todos los .puml de la carpeta img:
 
