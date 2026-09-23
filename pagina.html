@@ -106,6 +106,14 @@
                 <button type="submit" class="btn btn-primary btn-block">
                   Enviar
                 </button>
+
+                <button
+                  type="button"
+                  id="irConMensaje"
+                  class="btn btn-outline-secondary btn-block mt-2"
+                >
+                  Ir a URL con mensaje
+                </button>
               </form>
             </div>
           </div>
@@ -134,6 +142,16 @@
         .addEventListener("submit", function (event) {
           event.preventDefault();
           alert("Formulario enviado.");
+        });
+
+      document
+        .getElementById("irConMensaje")
+        .addEventListener("click", function () {
+          const urlBase = "https://example.com/";
+          const mensaje = CKEDITOR.instances.mensaje.getData();
+          const destino = urlBase + "?mensaje=" + encodeURIComponent(mensaje);
+
+          window.location.href = destino;
         });
     </script>
   </body>
