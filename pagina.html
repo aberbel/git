@@ -27,7 +27,20 @@
       }
 
       .ck-editor-wrapper .cke {
-        width: 100% !important;
+        width: calc(100% / 1.25) !important;
+        zoom: 1.25;
+      }
+
+      @supports not (zoom: 1) {
+        .ck-editor-wrapper .cke {
+          width: 100% !important;
+          transform: scale(1.25);
+          transform-origin: top left;
+        }
+
+        .ck-editor-wrapper {
+          padding-bottom: 170px;
+        }
       }
 
       .ck-editor-wrapper .cke_contents {
