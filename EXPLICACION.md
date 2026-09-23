@@ -124,6 +124,45 @@ Resultado:
 
 - img/secuencia_ckeditor.svg
 
+### Comandos para ejecutar PlantUML y obtener SVG
+
+Con lo instalado en este proyecto, estos son los comandos recomendados en PowerShell:
+
+1. Ir al directorio del proyecto:
+
+- cd C:\Users\Casa\Desktop\gitdesa
+
+2. Verificar Java:
+
+- java -version
+
+3. Generar SVG de un archivo .puml:
+
+- java -jar .\plantuml-jre8.jar -tsvg .\img\secuencia_ckeditor.puml
+
+4. Generar SVG de todos los .puml de la carpeta img:
+
+- Get-ChildItem .\img\*.puml | ForEach-Object { java -jar .\plantuml-jre8.jar -tsvg $\_.FullName }
+
+5. Generar en una carpeta de salida especifica:
+
+- New-Item -ItemType Directory -Force .\img\svg
+- java -jar .\plantuml-jre8.jar -tsvg -o .\img\svg .\img\secuencia_ckeditor.puml
+
+Nota:
+
+- Se conserva plantuml.jar en la raiz por peticion del usuario.
+- Para generar en este entorno, se usa plantuml-jre8.jar por compatibilidad con Java 8.
+- Pasos mínimos:
+
+- Ir al proyecto
+- Ejecutar PlantUML con formato SVG
+- Comandos:
+
+- cd C:\Users\Casa\Desktop\gitdesa
+- java -jar plantuml-jre8.jar -tsvg secuencia_ckeditor.puml
+- Eso te genera el SVG junto al .puml, en secuencia_ckeditor.svg.
+
 ### Vista del diagrama en Markdown
 
 GitHub no renderiza PlantUML de forma nativa, por eso se incluye el SVG generado:
