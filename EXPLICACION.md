@@ -2,149 +2,141 @@
 
 ## Objetivo principal
 
-Se creo una pagina HTML con Bootstrap 4 y un formulario que integra CKEditor en el campo de mensaje.
+Se construyo una pagina HTML con Bootstrap 4 y un formulario con CKEditor para escribir contenido enriquecido y enviarlo por URL como parametro.
 
-## Archivos del trabajo
+## Archivos implicados
 
 - pagina.html
 - EXPLICACION.md
+- plantuml.jar
+- plantuml-jre8.jar
+- img/secuencia_ckeditor.puml
+- img/secuencia_ckeditor.svg
 
 ## Tecnologias usadas
 
-- Bootstrap 4.6 (CDN)
-- jQuery 3.5.1 slim (CDN)
-- Bootstrap Bundle JS 4.6 (CDN)
-- CKEditor 4.22.1 standard (CDN)
+- Bootstrap 4.6 por CDN
+- jQuery 3.5.1 slim por CDN
+- Bootstrap Bundle 4.6 por CDN
+- CKEditor 4.22.1 standard por CDN
+- PlantUML para el diagrama de secuencia
 
-## Estructura de la pagina
+## Cambios funcionales realizados en la pagina
 
-- Contenedor Bootstrap centrado.
-- Tarjeta visual (card) para el formulario.
-- Campos del formulario: nombre, correo electronico, asunto y mensaje.
-- Campo mensaje como textarea transformado por CKEditor.
-- Boton de envio normal.
-- Boton adicional para ir a una URL enviando el contenido del editor por query string.
+1. Se creo el formulario con campos de nombre, correo, asunto y mensaje.
+2. El campo mensaje se transformo a CKEditor con CKEDITOR.replace.
+3. Se amplio el editor en ancho y altura.
+4. Se redujo la toolbar para dejar solo Bold y Link.
+5. Se oculto el pie de ruta de elementos del editor.
+6. Se agrego boton para redireccionar a una URL con el contenido del editor como query param.
 
-## Cambios de diseno y tamano en CKEditor
+## Ajustes visuales de CKEditor
 
-- Se aumento el ancho disponible del formulario cambiando la columna a col-lg-10.
-- Se aumento la altura del editor con configuracion height en CKEditor.
-- Se definio altura minima del area editable con CSS (cke_contents).
+- Ancho al 100 por ciento sobre su contenedor.
+- Altura alta para escritura amplia.
+- Zoom de 125 por ciento solo con CSS.
+- Fallback con transform para navegadores sin soporte de zoom.
 
-## Zoom del editor al 125% (solo CSS)
+## Configuracion de toolbar y pie del editor
 
-Se aplico zoom visual al contenedor de CKEditor con:
+- Toolbar limitada a negrita y enlace.
+- removePlugins: elementspath para ocultar la ruta inferior tipo body p.
+- resize_enabled: false para quitar la esquina de redimensionado.
 
-- zoom: 1.25
-- ajuste de ancho compensado con width: calc(100% / 1.25)
+## Envio de contenido por URL
 
-Tambien se agrego fallback para navegadores sin soporte de zoom:
+El boton adicional hace este flujo:
 
-- transform: scale(1.25)
-- transform-origin: top left
-- padding-bottom extra en el wrapper para evitar solapes visuales
+1. Lee contenido con CKEDITOR.instances.mensaje.getData().
+2. Codifica con encodeURIComponent.
+3. Construye destino con ?mensaje=...
+4. Redirige con window.location.href.
 
-## Barra de herramientas reducida
+## Codificacion del parametro
 
-Se dejo CKEditor solo con:
+Se envia como percent-encoding sobre UTF-8:
 
-- Bold (negrita)
-- Link (enlace)
+- Espacios como %20.
+- Acentos, eñe y caracteres especiales convertidos a secuencias UTF-8 escapadas.
 
-## Quitar texto del pie del editor (body p)
+## Recuperacion en Servlet Java (GET, UTF-8)
 
-Para ocultar la ruta de elementos del pie (element path), se uso:
-
-- removePlugins: "elementspath"
-
-Y para quitar la esquina de redimensionado:
-
-- resize_enabled: false
-
-## Que es CKEDITOR y donde se define
-
-- CKEDITOR es el objeto global de CKEditor 4.
-- No se define manualmente en el codigo local.
-- Lo crea el script cargado desde CDN: https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js
-- Despues de cargar ese script, se puede usar CKEDITOR.replace("mensaje", {...}).
-
-## Envio del contenido del editor en la URL
-
-Se agrego un boton que:
-
-- Lee el contenido con CKEDITOR.instances.mensaje.getData().
-- Codifica el parametro con encodeURIComponent(...).
-- Redirige a una URL base con ?mensaje=...
-
-Ejemplo de construccion:
-
-- destino = urlBase + "?mensaje=" + encodeURIComponent(mensaje)
-
-## Codificacion del parametro enviado
-
-El parametro va en percent-encoding sobre UTF-8.
-
-- encodeURIComponent genera secuencias %XX para caracteres no ASCII.
-- Espacios: %20
-- Acentos y eñe: codificados en UTF-8 y luego escapados en URL.
-
-## Recuperar el parametro en un Servlet Java (GET, UTF-8)
-
-Forma normal:
+Recuperacion normal:
 
 - String mensaje = request.getParameter("mensaje");
 
-Para que llegue bien en GET, el servidor debe decodificar URI en UTF-8.
-En Tomcat, en server.xml:
+Configuracion recomendada en Tomcat:
 
 - URIEncoding="UTF-8"
 - useBodyEncodingForURI="true"
 
 Nota:
 
-- request.setCharacterEncoding("UTF-8") aplica sobre todo a cuerpo de peticion (POST), no siempre arregla GET.
+- request.setCharacterEncoding("UTF-8") ayuda sobre todo en cuerpo POST, no siempre en query GET.
 
-Workaround cuando llega mal (solo temporal):
+## Diferencia entre getData y value
 
-- new String(raw.getBytes("ISO-8859-1"), "UTF-8")
+- CKEDITOR.instances.mensaje.getData() devuelve el HTML actual del editor.
+- document.getElementById("mensaje").value devuelve el valor del textarea original.
 
-## Diferencia entre getData() y textarea.value
-
-No son equivalentes en todos los momentos.
-
-- CKEDITOR.instances.mensaje.getData() obtiene el contenido real del editor (HTML del editor).
-- document.getElementById("mensaje").value obtiene el valor actual del textarea original.
-
-Si se quiere leer textarea.value sincronizado con CKEditor, antes hay que ejecutar:
+Para sincronizar textarea antes de leer value:
 
 - CKEDITOR.instances.mensaje.updateElement();
 
-Y despues leer:
-
-- document.getElementById("mensaje").value
-
-## Comandos Git explicados durante el trabajo
-
-Para ver URL de remotos:
+## Comandos Git explicados
 
 - git remote -v
 - git remote get-url origin
 
-Resultado visto en este repositorio:
+Remote detectado:
 
-- origin -> https://github.com/aberbel/git.git (fetch/push)
+- origin -> https://github.com/aberbel/git.git
 
-## Ajustes tecnicos adicionales
+## Diagrama de secuencia en PlantUML
 
-- Se retiraron atributos integrity de algunos CDN para evitar posibles bloqueos por hash no coincidente.
-- Se valido el archivo HTML tras cambios y no aparecieron errores en la comprobacion del editor.
+### Fuente PlantUML
+
+El diagrama se dejo en:
+
+- img/secuencia_ckeditor.puml
+
+### Instalacion y ejecucion solicitada
+
+Se dejo instalado plantuml.jar en la raiz del proyecto y no se elimino.
+
+Comando intentado para generar SVG:
+
+- java -jar .\plantuml.jar -tsvg .\img\secuencia_ckeditor.puml
+
+Resultado:
+
+- Error de version Java: el jar principal requiere runtime mas nuevo.
+
+### Solucion aplicada sin quitar plantuml.jar
+
+1. Se mantuvo plantuml.jar intacto en la raiz.
+2. Se descargo un jar compatible con Java 8: plantuml-jre8.jar.
+3. Se genero el SVG con:
+
+- java -jar .\plantuml-jre8.jar -tsvg .\img\secuencia_ckeditor.puml
+
+4. Se obtuvo correctamente:
+
+- img/secuencia_ckeditor.svg
+
+### Vista del diagrama en Markdown
+
+GitHub no renderiza PlantUML de forma nativa, por eso se incluye el SVG generado:
+
+![Diagrama de secuencia CKEditor](img/secuencia_ckeditor.svg)
 
 ## Estado final
 
-La pagina queda lista para:
+El proyecto queda con:
 
-- Editar mensaje enriquecido con CKEditor.
-- Usar solo negrita y enlace en toolbar.
-- Ocultar el pie de ruta de elementos del editor.
-- Aplicar zoom visual del editor al 125%.
-- Redirigir a una URL enviando el contenido del editor como parametro.
+- Formulario funcional con CKEditor.
+- Toolbar minima (Bold y Link).
+- Pie de CKEditor oculto.
+- Zoom visual aplicado al editor.
+- Redireccion con parametro mensaje codificado en UTF-8 para uso en backend Java.
+- Diagrama de secuencia en PlantUML y su SVG listo para visualizar en GitHub.

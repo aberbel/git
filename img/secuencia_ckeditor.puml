@@ -1,0 +1,24 @@
+@startuml
+skinparam monochrome false
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+
+title Flujo de envio de contenido CKEditor por URL
+
+actor Usuario
+participant "Pagina HTML" as Pagina
+participant "CKEditor" as Editor
+participant "Navegador" as Browser
+participant "Servidor Java\n(Servlet doGet)" as Servlet
+
+Usuario -> Pagina: Clic en "Ir a URL con mensaje"
+Pagina -> Editor: getData()
+Editor --> Pagina: HTML del mensaje
+Pagina -> Pagina: encodeURIComponent(mensaje)
+Pagina -> Browser: window.location.href = destino
+Browser -> Servlet: GET /ruta?mensaje=...
+Servlet -> Servlet: request.getParameter("mensaje")
+Servlet --> Browser: Respuesta UTF-8
+Browser --> Usuario: Muestra resultado
+
+@enduml
