@@ -76,7 +76,7 @@ echo [4/5] Creando hook pre-merge-commit en "%PREMERGE_FILE%"...
     echo MERGE_HEAD_FILE=$(git rev-parse --git-path MERGE_HEAD^)
     echo if [ -f "$MERGE_HEAD_FILE" ]; then
     echo   SOURCE_COMMIT=$(cat "$MERGE_HEAD_FILE"^)
-    echo   SOURCE_BRANCH=$(git name-rev --name-only --refs='refs/heads/*' "$SOURCE_COMMIT" 2^>/dev/null ^| cut -d'~' -f1 ^| cut -d'^' -f1^)
+    echo   SOURCE_BRANCH=$(git name-rev --name-only --refs='refs/heads/*' "$SOURCE_COMMIT" 2^>/dev/null ^| cut -d'~' -f1^)
     echo fi
     echo.
     echo # 3. Detecta si origen y destino son ramas protegidas
@@ -104,8 +104,23 @@ if errorlevel 1 (
     exit /b 1
 )
 
+echo [5/6] Actualizando hooks en el repositorio actual...
+if exist ".git\hooks" (
+    copy /Y "%PRECOMMIT_FILE%" ".git\hooks\pre-commit" >nul
+    if errorlevel 1 (
+        echo Error: no se pudo actualizar .git\hooks\pre-commit.
+        exit /b 1
+    )
+
+    copy /Y "%PREMERGE_FILE%" ".git\hooks\pre-merge-commit" >nul
+    if errorlevel 1 (
+        echo Error: no se pudo actualizar .git\hooks\pre-merge-commit.
+        exit /b 1
+    )
+)
+
 echo.
-echo [5/5] Ejecutando git init en el repositorio actual...
+echo [6/6] Ejecutando git init en el repositorio actual...
 git init
 if errorlevel 1 (
     echo Error: no se pudo ejecutar git init.
