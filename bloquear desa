@@ -118,3 +118,5 @@ if errorlevel 1 (
 
 echo Completado. Configuracion aplicada y git init ejecutado.
 endlocal
+
+cambio
