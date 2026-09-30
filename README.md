@@ -31,3 +31,5 @@ git push
 
 Nueva rama desarrollo
 Segundo merge
+
+git merge --no-ff <branch-to-merge>
